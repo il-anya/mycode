@@ -1,0 +1,19 @@
+- name: Use Redfish to gather NIC Inventory, and Virtual Media Information
+  hosts: Redfish   # this is the group we are using
+  connection: local   # we don't want to SSH anywhere
+  gather_facts: false  # if we did gather facts, they would be about ourselves (connection:local)
+
+  collections:
+    community.general
+  tasks:
+    - name: Get Manager NIC inventory information
+      community.general.redfish_info:
+      category: Manager
+      command: GetManagerNicInventory
+      baseuri: "{{ baseuri }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+
+    - name: Display NIC data
+      debug:
+        var: nicInv

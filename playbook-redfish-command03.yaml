@@ -1,0 +1,37 @@
+---
+- name: Create a session and token to use
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  # credentials for iDRAC
+  vars:
+    baseuri: 10.0.0.89
+    username: root
+    password: r0gerwilc0
+
+  collections:
+    community.general
+
+  tasks: 
+
+  - name: Gather BIOS attributes 
+    community.general.redfish_command:
+      attributes: all
+    register: bios_attributes
+
+  - name: Print BIOS attribute status
+    debug:
+        var: bios_attributes
+
+  - name: pause to look at attributes and token info
+    pause:
+
+ # trash the token, we are done with it
+  - name: Delete the Session
+    community.general.redfish_command:
+       category: Sessions
+       command: DeleteSession
+       baseuri: "{{ baseuri }}"
+       auth_token: "{{ result.session.token }}"
+       session_uri: "{{ result.session.uri }}"

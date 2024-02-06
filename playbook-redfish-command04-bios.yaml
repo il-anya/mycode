@@ -1,0 +1,29 @@
+---
+- name: Create a session and token to use
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  # credentials for iDRAC
+  vars:
+    baseuri: 10.0.0.89
+    username: root
+    password: r0gerwilc0
+
+  collections:
+    community.general
+
+  tasks:
+
+- name: Get BIOS Attributes
+    community.general.redfish_info:
+      category: Systems
+      command: GetBiosAttributes
+      baseuri: "{{ baseuri }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+    register: bios_attributes_info
+
+  - name: Display BIOS Attributes
+    debug:
+      var: bios_attributes_info.redfish_facts.bios_attribute.entries
